@@ -1,0 +1,1 @@
+import index from"./index.css";import{display}from"./modules/display";import html from"./index.html";

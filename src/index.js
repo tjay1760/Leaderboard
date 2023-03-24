@@ -28,14 +28,26 @@ const getScores = async () => {
     scoreboard.innerHTML = '';
     // Check if there are scores available
     if (data.result.length === 0) {
-      const noScoresMessage = document.createElement('div');
+      const noScoresMessage = document.createElement('li');
       noScoresMessage.innerText = 'No scores available yet';
       scoreboard.appendChild(noScoresMessage);
     } else {
       // Iterate over the score data and create a new element for each score
       data.result.forEach((score) => {
-        const scoreElement = document.createElement('div');
-        scoreElement.innerText = `Player: ${score.user} - Score: ${score.score}`;
+        const scoreElement = document.createElement('li');
+        const playerElement = document.createElement('span');
+        const scoreValueElement = document.createElement('span');
+
+        playerElement.innerText = score.user;
+        playerElement.classList.add('player-display');
+
+        scoreValueElement.innerText = score.score;
+        scoreValueElement.classList.add('score-display');
+
+        scoreElement.appendChild(playerElement);
+        scoreElement.appendChild(scoreValueElement);
+        scoreElement.classList.add('scorelist');
+
         scoreboard.appendChild(scoreElement);
       });
     }

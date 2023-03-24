@@ -13,27 +13,6 @@ const setGameId = (gameId) => {
 
 // Define a function to get game ID from local storage
 const getGameId = () => localStorage.getItem('gameId');
-
-const createGame = async () => {
-  try {
-    const response = await fetch('https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: 'My cool new game',
-      }),
-    });
-    const data = await response.json();
-    const gameId = data.result.split(': ')[1];
-
-    setGameId(gameId); // Store the game ID in local storage
-  } catch (error) {
-    console.error('Error creating game:', error);
-  }
-};
-createGame();
 // Define a function that fetches the scores for the game with the stored ID
 const getScores = async () => {
   try {
@@ -64,6 +43,35 @@ const getScores = async () => {
     console.error('Error fetching scores:', error);
   }
 };
+const createGame = async () => {
+  try {
+    const gameId = getGameId();
+    if (gameId) {
+      console.log('Game ID already exists:', gameId);
+      getScores(); // fetch the scores for the existing game
+      return;
+    }
+    const response = await fetch('https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: 'My cool new game',
+      }),
+    });
+    const data = await response.json();
+    const newGameId = data.result.split(': ')[1];
+
+    setGameId(newGameId); // Store the game ID in local storage
+    console.log('New game created with ID:', newGameId);
+    getScores(); // fetch the scores for the new game
+  } catch (error) {
+    console.error('Error creating game:', error);
+  }
+};
+
+createGame();
 
 // Find the refresh button element and attach a click event handler to it
 const refreshButton = document.querySelector('.refresh');
@@ -98,7 +106,6 @@ submitButton.addEventListener('click', (event) => {
       console.log('Score submitted:', data);
       nameInput.value = '';
       scoreInput.value = '';
-      getScores(); // refresh the scoreboard
     })
     .catch((error) => console.error('Error submitting score:', error));
 });

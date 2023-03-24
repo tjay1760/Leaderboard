@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import scoreboard from './modules/scoreboard.js';
-// import './index.css';
+import './index.css';
 
 const submitButton = document.querySelector('.submit');
 const nameInput = document.querySelector('.name');
